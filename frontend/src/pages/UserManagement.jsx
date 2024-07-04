@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel, Checkbox, ListItemText } from '@mui/material';
 import axios from 'axios';
 import { ruRU } from '@mui/x-data-grid/locales';
 
@@ -9,6 +9,7 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   console.log(selectedUser);
   const [open, setOpen] = useState(false);
+  const roles = ['admin', 'teacher', 'student'];
 
   useEffect(() => {
     fetchUsers();
@@ -17,14 +18,18 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:3000/api/users');
-      setUsers(response.data);
+      const transformedUsers = response.data.map(user => ({
+        ...user,
+        roles: user.roles.join(', ') // Transform array to string
+      }));
+      setUsers(transformedUsers);
     } catch (error) {
       console.error('Failed to fetch users', error);
     }
   };
 
   const handleOpen = (user = null) => {
-    setSelectedUser(user);
+    setSelectedUser(user ? { ...user, roles: user.roles.split(', ') } : { roles: [] }); // Transform string back to array
     setOpen(true);
   };
 
@@ -35,12 +40,15 @@ const UserManagement = () => {
 
   const handleSave = async () => {
     try {
-      if (selectedUser) {
-        console.log('хуета');
-        await axios.put(`http://127.0.0.1:3000/api/users/${selectedUser.id}`, selectedUser);
+      const userToSave = {
+        ...selectedUser,
+        roles: Array.isArray(selectedUser.roles) ? selectedUser.roles : selectedUser.roles.split(', ') // Ensure roles is an array
+      };
+
+      if (selectedUser.id) {
+        await axios.put(`http://127.0.0.1:3000/api/users/${selectedUser.id}`, userToSave);
       } else {
-        console.log('норм');
-        await axios.post('http://127.0.0.1:3000/api/users', selectedUser);
+        await axios.post('http://127.0.0.1:3000/api/users', userToSave);
       }
       fetchUsers();
       handleClose();
@@ -58,34 +66,34 @@ const UserManagement = () => {
     }
   };
 
-
-
   return (
     <div>
-   
-      <Button variant="contained" color="primary" onClick={() => handleOpen()}>Добавить пользователя</Button>
+      <Button sx={{ mb: 1 }} variant="contained" color="primary" onClick={() => handleOpen()}>Добавить пользователя</Button>
       <DataGrid
-        localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
-        rows={users}
-        columns={[
-          { field: 'name', headerName: 'Имя', width: 150 },
-          { field: 'login', headerName: 'Логин', width: 150 },
-          { field: 'telegram', headerName: 'Telegram', width: 150 },
-          { field: 'role', headerName: 'Роль', width: 150 },
-          {
-            field: 'actions',
-            headerName: 'Действия',
-            width: 300,
-            renderCell: (params) => (
-              <>
-                <Button onClick={() => handleOpen(params.row)}>Изменить</Button>
-                <Button color='error' onClick={() => handleDelete(params.row.id)}>Удалить</Button>
-              </>
-            )
-          }
-        ]}
-        pageSize={10}
-      />
+  autosizeOnMount={true}
+  localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+  rows={users}
+  columns={[
+    { field: 'name', headerName: 'Имя', flex: 1, autoWidth: true },
+    { field: 'login', headerName: 'Логин', flex: 1, autoWidth: true },
+    { field: 'telegram', headerName: 'Telegram', flex: 1, autoWidth: true },
+    { field: 'roles', headerName: 'Роль', flex: 1, autoWidth: true },
+    {
+      field: 'actions',
+      headerName: 'Действия',
+      flex: 1,
+      autoWidth: true,
+      renderCell: (params) => (
+        <>
+          <Button onClick={() => handleOpen(params.row)}>Изменить</Button>
+          <Button color='error' onClick={() => handleDelete(params.row.id)}>Удалить</Button>
+        </>
+      )
+    }
+  ]}
+  pageSize={10}
+/>
+
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{selectedUser ? 'Редактировать пользователя' : 'Добавить пользователя'}</DialogTitle>
         <DialogContent>
@@ -120,12 +128,17 @@ const UserManagement = () => {
           <FormControl fullWidth margin="normal">
             <InputLabel>Роль</InputLabel>
             <Select
-              value={selectedUser?.role || ''}
-              onChange={(e) => setSelectedUser({ ...selectedUser, role: e.target.value })}
-              label="Роль"
+              multiple
+              value={selectedUser?.roles || []} // Ensure roles is always an array
+              onChange={(e) => setSelectedUser({ ...selectedUser, roles: e.target.value })}
+              renderValue={(selected) => selected.join(', ')}
             >
-              <MenuItem value="admin">Админ</MenuItem>
-              <MenuItem value="user">Пользователь</MenuItem>
+              {roles?.map((role) => (
+                <MenuItem key={role} value={role}>
+                  <Checkbox checked={selectedUser?.roles.includes(role)} />
+                  <ListItemText primary={role} />
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </DialogContent>

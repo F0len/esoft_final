@@ -43,7 +43,6 @@ class UserModel {
         .where('role_user.user_id', user.id)
         .pluck('role.name');
       user.roles = roles;
-      delete user.password;
     }
     return user;
   }
@@ -68,18 +67,35 @@ class UserModel {
   async updateUser(id, updatedUser) {
     await this.knex.transaction(async trx => {
      
+      const roleIds = [];
+      if (updatedUser.roles && updatedUser.roles.length > 0) {
+        for (const roleName of updatedUser.roles) {
+          const roleId = await trx('role').where('name', roleName).select('id').first();
+          if (roleId) {
+            roleIds.push(roleId.id);
+          }
+        }
+      }
+      if (updatedUser.roles && updatedUser.roles.length > 0) {
+        await trx('role_user').where('user_id', id).del();
+        if (roleIds.length > 0) {
+          const roleUserData = roleIds.map(roleId => ({
+            user_id: id,
+            role_id: roleId,
+          }));
+          await trx('role_user').insert(roleUserData);
+        }
+        delete updatedUser.roles;
+      }
+      if(updatedUser.roles && updatedUser.roles.length == 0){
+        delete updatedUser.roles;
+      }
+      
       if (Object.keys(updatedUser).length > 0) {
         await trx('user').where('id', id).update(updatedUser);
       }
   
-      if (updatedUser.roles && updatedUser.roles.length > 0) {
-        await trx('role_user').where('user_id', id).del();
-        const roleUserData = updatedUser.roles.map(roleId => ({
-          user_id: id,
-          role_id: roleId,
-        }));
-        await trx('role_user').insert(roleUserData);
-      }
+      
     });
   
     

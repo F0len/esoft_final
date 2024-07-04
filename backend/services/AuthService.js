@@ -13,19 +13,7 @@ class AuthService {
   generateRefreshToken(user) {
     return jwt.sign({ id: user.id, login: user.login }, this.secretKey, { expiresIn: '2d' });
   }
-  // async register(user) {
-  //   const hashedPassword = await bcrypt.hash(user.password, 10);
-  //   const newUser = {
-  //     id: user.id,
-  //     name: user.name,
-  //     login: user.login,
-  //     password: hashedPassword,
-  //     telegram: user.telegram
-  //   };
-  //   await this.userModel.createUser(newUser);
-  //   return newUser;
-  // }
-
+  
   async login(login, password) {
     const user = await this.userModel.getUserByLogin(login);
     if (!user) {

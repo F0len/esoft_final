@@ -3,34 +3,6 @@
 BEGIN;
 
 
-ALTER TABLE IF EXISTS public.role_user DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.role_user DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.lesson DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.homework DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.course_user DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.course_user DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.lesson_files DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.lesson_files DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.feedback_response DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.feedback_response DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.homework_response DROP CONSTRAINT IF EXISTS None;
-
-ALTER TABLE IF EXISTS public.homework_response DROP CONSTRAINT IF EXISTS None;
-
-
-
-DROP TABLE IF EXISTS public."user";
-
 CREATE TABLE IF NOT EXISTS public."user"
 (
     id uuid NOT NULL,
@@ -41,17 +13,13 @@ CREATE TABLE IF NOT EXISTS public."user"
     PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS public.course;
-
 CREATE TABLE IF NOT EXISTS public.course
 (
-    id integer NOT NULL,
+    id serial NOT NULL,
     name character varying NOT NULL,
     description character varying,
     PRIMARY KEY (id)
 );
-
-DROP TABLE IF EXISTS public.role;
 
 CREATE TABLE IF NOT EXISTS public.role
 (
@@ -60,8 +28,6 @@ CREATE TABLE IF NOT EXISTS public.role
     PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS public.role_user;
-
 CREATE TABLE IF NOT EXISTS public.role_user
 (
     user_id uuid,
@@ -69,11 +35,9 @@ CREATE TABLE IF NOT EXISTS public.role_user
     PRIMARY KEY (user_id, role_id)
 );
 
-DROP TABLE IF EXISTS public.lesson;
-
 CREATE TABLE IF NOT EXISTS public.lesson
 (
-    id uuid NOT NULL,
+    id serial NOT NULL,
     name character varying,
     description character varying,
     scheduled_date date,
@@ -83,19 +47,15 @@ CREATE TABLE IF NOT EXISTS public.lesson
     PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS public.homework;
-
 CREATE TABLE IF NOT EXISTS public.homework
 (
-    "Id" uuid,
+    "Id" serial,
     task text NOT NULL,
     deadline date NOT NULL,
     form json,
     course_id integer NOT NULL,
     PRIMARY KEY ("Id")
 );
-
-DROP TABLE IF EXISTS public.course_user;
 
 CREATE TABLE IF NOT EXISTS public.course_user
 (
@@ -104,8 +64,6 @@ CREATE TABLE IF NOT EXISTS public.course_user
     PRIMARY KEY (user_id, course_id)
 );
 
-DROP TABLE IF EXISTS public.files;
-
 CREATE TABLE IF NOT EXISTS public.files
 (
     id uuid NOT NULL,
@@ -113,33 +71,27 @@ CREATE TABLE IF NOT EXISTS public.files
     PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS public.lesson_files;
-
 CREATE TABLE IF NOT EXISTS public.lesson_files
 (
-    lesson_id uuid,
+    lesson_id integer,
     file_id uuid,
     PRIMARY KEY (lesson_id, file_id)
 );
 
-DROP TABLE IF EXISTS public.feedback_response;
-
 CREATE TABLE IF NOT EXISTS public.feedback_response
 (
-    id integer NOT NULL,
+    id serial NOT NULL,
     user_id uuid NOT NULL,
-    lession_id uuid NOT NULL,
+    lession_id integer NOT NULL,
     response json NOT NULL,
     PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS public.homework_response;
-
 CREATE TABLE IF NOT EXISTS public.homework_response
 (
-    id integer NOT NULL,
+    id serial NOT NULL,
     user_id uuid NOT NULL,
-    homework_id uuid NOT NULL,
+    homework_id integer NOT NULL,
     response json NOT NULL,
     PRIMARY KEY (id)
 );

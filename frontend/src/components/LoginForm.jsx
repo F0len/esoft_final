@@ -20,7 +20,7 @@ const LoginForm = () => {
      
       const token = response.headers.getAuthorization();
       localStorage.setItem('token', token);
-      navigate('/home');
+      navigate('/course');
     } catch (error) {
       console.error('Error logging in', error);
       alert('Failed to log in. Please try again.');
