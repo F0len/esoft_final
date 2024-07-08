@@ -24,6 +24,28 @@ class CourseController {
         res.status(500).json({ error: error.message });
       }
     };
+    getUserCourseById = async (req, res) => {
+      try {
+        const { id } = req.params;
+        const users = await this.courseService.getUserCourseById(id);
+        if (!users) {
+          return res.status(404).json({ error: 'users not found' });
+        }
+        res.status(200).json(users);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
+
+    createUserCourse = async (req, res) => {
+      try {
+        const userCourseData = req.body;
+        const [course] = await this.courseService.createUserCourse(userCourseData);
+        res.status(201).json(course);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
   
     createCourse = async (req, res) => {
       try {
@@ -48,7 +70,17 @@ class CourseController {
         res.status(500).json({ error: error.message });
       }
     };
-  
+
+    deleteUserCourse = async (req, res) => {
+      try {
+        const { course_id,user_id} = req.params;
+        await this.courseService.deleteUserCourse(course_id,user_id);
+        res.sendStatus(204);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
+
     deleteCourse = async (req, res) => {
       try {
         const { id } = req.params;

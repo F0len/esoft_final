@@ -7,6 +7,7 @@ function createUserRouter(userController) {
   router.put('/:id', userController.updateUser);
   router.delete('/:id', userController.deleteUser);
   router.get('/', userController.getAllUsers);
+  router.get('/small_info', userController.getAllUsersSmallInfo);
   router.get('/:login', userController.getUsersByLogin);
 
   return router;

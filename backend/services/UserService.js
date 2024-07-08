@@ -35,6 +35,9 @@ class UserService {
   async getAllUsers() {
     return this.userModel.getAllUsers();
   }
+  async getAllUsersSmallInfo() {
+    return this.userModel.getAllUsersSmallInfo();
+  }
   async getUsersByLogin(login) {
     return this.userModel.getUserByLogin(login);
   }

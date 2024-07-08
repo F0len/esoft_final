@@ -70,29 +70,29 @@ const UserManagement = () => {
     <div>
       <Button sx={{ mb: 1 }} variant="contained" color="primary" onClick={() => handleOpen()}>Добавить пользователя</Button>
       <DataGrid
-  autosizeOnMount={true}
-  localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
-  rows={users}
-  columns={[
-    { field: 'name', headerName: 'Имя', flex: 1, autoWidth: true },
-    { field: 'login', headerName: 'Логин', flex: 1, autoWidth: true },
-    { field: 'telegram', headerName: 'Telegram', flex: 1, autoWidth: true },
-    { field: 'roles', headerName: 'Роль', flex: 1, autoWidth: true },
-    {
-      field: 'actions',
-      headerName: 'Действия',
-      flex: 1,
-      autoWidth: true,
-      renderCell: (params) => (
-        <>
-          <Button onClick={() => handleOpen(params.row)}>Изменить</Button>
-          <Button color='error' onClick={() => handleDelete(params.row.id)}>Удалить</Button>
-        </>
-      )
-    }
-  ]}
-  pageSize={10}
-/>
+        autosizeOnMount={true}
+        localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+        rows={users}
+        columns={[
+          { field: 'name', headerName: 'Имя', flex: 1, autoWidth: true },
+          { field: 'login', headerName: 'Логин', flex: 1, autoWidth: true },
+          { field: 'telegram', headerName: 'Telegram', flex: 1, autoWidth: true },
+          { field: 'roles', headerName: 'Роль', flex: 1, autoWidth: true },
+          {
+            field: 'actions',
+            headerName: 'Действия',
+            flex: 1,
+            autoWidth: true,
+            renderCell: (params) => (
+              <>
+                <Button onClick={() => handleOpen(params.row)}>Изменить</Button>
+                <Button color='error' onClick={() => handleDelete(params.row.id)}>Удалить</Button>
+              </>
+            )
+          }
+        ]}
+        pageSize={10}
+      />
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{selectedUser ? 'Редактировать пользователя' : 'Добавить пользователя'}</DialogTitle>
@@ -125,11 +125,15 @@ const UserManagement = () => {
             value={selectedUser?.telegram || ''}
             onChange={(e) => setSelectedUser({ ...selectedUser, telegram: e.target.value })}
           />
-          <FormControl fullWidth margin="normal">
+          <FormControl fullWidth>
             <InputLabel>Роль</InputLabel>
             <Select
+            value={selectedUser?.roles || []}
+            label='Роль'
               multiple
-              value={selectedUser?.roles || []} // Ensure roles is always an array
+              margin="normal"
+              displayEmpty
+              fullWidth
               onChange={(e) => setSelectedUser({ ...selectedUser, roles: e.target.value })}
               renderValue={(selected) => selected.join(', ')}
             >

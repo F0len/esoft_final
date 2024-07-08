@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import LoginPage from './pages/LoginPage';
 import CoursePage from './pages/CoursePage';
 import ForbiddenPage from './pages/ForbiddenPage';
-import UserManagement from './pages/UserManagement';
+import UserManagement from './pages/UserManagementPage';
 import { useSelector } from 'react-redux';
 import ProtectedRoute from './ProtectedRoute';
 import { Outlet } from 'react-router-dom';
@@ -15,7 +15,7 @@ const App = () => {
   return (
     <Router>
     <Routes>
-      <Route path="/" element={<Navigate to={user ? "/course" : "/login"} />} />
+      <Route path="/" element={<Navigate to={user ? "/courses" : "/login"} />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forbidden" element={<ForbiddenPage />} />
       <Route element={<MainLayout />}>

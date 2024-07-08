@@ -63,6 +63,10 @@ class UserModel {
     });
     return Object.values(userMap);
   }
+  async getAllUsersSmallInfo() {
+    const users = await this.knex('user').select('user.id', 'user.name');
+    return users
+  }
 
   async updateUser(id, updatedUser) {
     await this.knex.transaction(async trx => {

@@ -40,6 +40,14 @@ class UserController {
             res.status(400).json({ error: error.message });
         }
     };
+    getAllUsersSmallInfo = async (req, res) => {
+        try {
+            const users = await this.userService.getAllUsersSmallInfo();
+            res.status(200).json(users);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    };
     getUsersByLogin = async (req, res) => {
         try {
             const { login } = req.params;
