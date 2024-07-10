@@ -19,3 +19,6 @@ export const createHomework = (homeworkData) => api.post('/homeworks', homeworkD
 export const attachFileToLesson = (lessonId, fileData) => api.post(`/lesson-files/${lessonId}`, fileData);
 export const getLessonById = (id) => api.get(`/lessons/${id}`);
 export const getHomeworkById = (id) => api.get(`/homeworks/${id}`);
+export const getLessonsByCourseId = (id) =>  api.get(`/courses/${id}/lesson`);
+export const getHomeworkByCourseId =(id) =>   api.get(`/courses/${id}/homework`);
+

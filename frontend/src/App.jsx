@@ -20,29 +20,28 @@ const App = () => {
   const role = 'student';
   return (
     <Router>
-    <Routes>
-      
-      <Route path="/" element={<Navigate to={user ? "/courses" : "/login"} />} />
-      
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/forbidden" element={<ForbiddenPage />} />
-      <Route element={<MainLayout />}>
-        
-        <Route path="/courses" element={<CoursePage />} />
-        <Route path="/my-courses" element={<CourseList />} />
-        <Route path="/admin" element={<Outlet />}>
-          <Route path="users" element={<UserManagement />} />
-          <Route path="courses" element={<CoursePageAdmin />} />
+      <Routes>
+
+        <Route path="/" element={<Navigate to={user ? "/courses" : "/login"} />} />
+
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forbidden" element={<ForbiddenPage />} />
+        <Route element={<MainLayout />}>
+          <Route path="/admin" element={<Outlet />}>
+            <Route path="users" element={<UserManagement />} />
+            <Route path="courses" element={<CoursePageAdmin />} />
+          </Route>
+          <Route path="/courses" element={<CoursePage />} />
+          <Route path="/my-courses" element={<CourseList />} />
+          <Route exact path="/my-courses" element={MyCourses} />
+          <Route exact path="/my-courses/:id" element={<CoursePage />} />
+          <Route exact path="/lessons/:id" element={LessonDetail} />
+          <Route exact path="/homeworks/:id" element={HomeworkDetail} />
+
         </Route>
-        <Route exact path="/my-courses" component={MyCourses} />
-        <Route exact path="/my-courses/:id" component={() => <CoursePage role={role} />} />
-        <Route exact path="/lessons/:id" component={LessonDetail} />
-        <Route exact path="/homeworks/:id" component={HomeworkDetail} />
-        
-      </Route>
-    </Routes>
-  </Router>
-    
+      </Routes>
+    </Router>
+
   );
 };
 

@@ -19,6 +19,9 @@ class CourseService {
     async getCourseLessonById(id){
       return await this.courseModel.getCourseLessonById(id);
     }
+    async getCourseHomeworkById(id){
+      return await this.courseModel.getCourseHomeworkById(id);
+    }
   
     async createCourse(courseData) {
       // const course = {

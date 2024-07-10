@@ -7,7 +7,7 @@ class AuthService {
     this.secretKey = secretKey;
   }
   generateAccessToken(user) {
-    return jwt.sign({ id: user.id, login: user.login }, this.secretKey, { expiresIn: '1h' });
+    return jwt.sign({ id: user.id, login: user.login }, this.secretKey, { expiresIn: '12h' });
   }
 
   generateRefreshToken(user) {

@@ -4,6 +4,7 @@ function createCourseRouter(courseController,tokenService) {
   const router = express.Router();
 
   router.get('/:id/lesson', tokenService.authenticate ,courseController.getCourseLessonById);
+  router.get('/:id/homework', tokenService.authenticate ,courseController.getCourseHomeworkById);
   router.get('/', courseController.getAllCourses);
   router.get('/my', tokenService.authenticate ,courseController.getCourseUserById);
   router.get('/:id', courseController.getCourseById);

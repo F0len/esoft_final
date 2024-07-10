@@ -62,7 +62,19 @@ class CourseController {
         res.status(500).json({ error: error.message });
       }
     };
-
+    
+    getCourseHomeworkById = async (req, res) => {
+      try {
+        const { id } = req.params;
+        const course = await this.courseService.getCourseHomeworkById(id);
+        if (!course) {
+          return res.status(404).json({ error: 'course not found' });
+        }
+        res.status(200).json(course);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
     createUserCourse = async (req, res) => {
       try {
         const userCourseData = req.body;

@@ -1,22 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { CircularProgress, Typography, Box, Button, List, ListItem, ListItemText, ListItemButton } from '@mui/material';
+import axios from 'axios';
 import CreateLessonDialog from './CreateLessonDialog';
 import CreateHomeworkDialog from './CreateHomeworkDialog';
-
-const lectures = [
-  { id: 1, title: 'Лекция 1. Построение маршрутов в node.js', description: 'Описание лекции...', time: '11.07.2024 15:00 МСК' },
-  { id: 2, title: 'Лекция 2. Построение...', description: 'Описание лекции 2...', time: '12.07.2024 15:00 МСК' },
-];
+import { getLessonsByCourseId, getHomeworkByCourseId } from '../services/api';
 
 const CourseDetail = ({ role }) => {
   const { id } = useParams();
-  const [course, setCourse] = useState(lectures);
-  const [loading, setLoading] = useState(false);
-  const [selectedLecture, setSelectedLecture] = useState(null);
+  
+  const [items, setItems] = useState([]);
+  console.log(items)
+  const [loading, setLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleLectureClick = (lecture) => {
-    setSelectedLecture(lecture);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [lessonsResponse, homeworkResponse] = await Promise.all([
+          getLessonsByCourseId(id),
+          getHomeworkByCourseId(id),
+        ]);
+
+        const lessons = lessonsResponse.data.map(lesson => ({ ...lesson, type: 'lesson' }));
+        const homework = homeworkResponse.data.map(hw => ({ ...hw, type: 'homework' }));
+
+        const combinedItems = [...lessons, ...homework].sort((a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date));
+        
+        setItems(combinedItems);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
   };
 
   if (loading) {
@@ -36,10 +59,10 @@ const CourseDetail = ({ role }) => {
         }}
       >
         <List>
-          {lectures.map((lecture) => (
-            <ListItem key={lecture.id} disablePadding>
-              <ListItemButton onClick={() => handleLectureClick(lecture)}>
-                <ListItemText primary={lecture.title} />
+          {items.map((item) => (
+            <ListItem key={item.id} disablePadding>
+              <ListItemButton onClick={() => handleItemClick(item)}>
+                <ListItemText primary={item.name} />
               </ListItemButton>
             </ListItem>
           ))}
@@ -50,24 +73,28 @@ const CourseDetail = ({ role }) => {
         component="main"
         sx={{ flexGrow: 1, p: 3 }}
       >
-        {selectedLecture ? (
+        {selectedItem ? (
           <Box>
-            <Typography variant="h4">{selectedLecture.title}</Typography>
-            <Typography variant="body1">{selectedLecture.description}</Typography>
-            <Typography variant="body2">Время начала: {selectedLecture.time}</Typography>
-            <Typography variant="h6">Запись лекции:</Typography>
-            <Box sx={{ width: '100%', height: '300px', border: '1px solid black', marginBottom: '16px' }}>
-              Тут плеер с видео
-            </Box>
+            <Typography variant="h4">{selectedItem.name}</Typography>
+            <Typography variant="body1">{selectedItem.description}</Typography>
+            <Typography variant="body2">Время начала: {new Date(selectedItem.scheduled_date).toLocaleString()}</Typography>
+            {selectedItem.type === 'lesson' && (
+              <>
+                <Typography variant="h6">Запись лекции:</Typography>
+                <Box sx={{ width: '100%', height: '300px', border: '1px solid black', marginBottom: '16px' }}>
+                  Тут плеер с видео
+                </Box>
+              </>
+            )}
             <Typography variant="h6">Прикреплённые файлы:</Typography>
             <Box>
-              <Button variant="outlined" sx={{ marginBottom: '8px' }}>Название файла 1</Button>
-              <Button variant="outlined" sx={{ marginBottom: '8px' }}>Название файла 2</Button>
-              <Button variant="outlined" sx={{ marginBottom: '8px' }}>Название файла 3</Button>
+              {selectedItem.files && selectedItem.files.map((file, index) => (
+                <Button variant="outlined" key={index} sx={{ marginBottom: '8px' }}>{file.name}</Button>
+              ))}
             </Box>
           </Box>
         ) : (
-          <Typography variant="h6">Выберите лекцию из меню</Typography>
+          <Typography variant="h6">Выберите лекцию или задание из меню</Typography>
         )}
       </Box>
     </Box>
