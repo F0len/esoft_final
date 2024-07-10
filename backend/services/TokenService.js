@@ -8,14 +8,15 @@ class TokenService {
     authenticate = (req, res, next) => {
         const accessToken = req.headers['authorization'];
         const refreshToken = req.cookies['refreshToken'];
+        const token = accessToken.split(' ')[1];
 
-        if (!accessToken && !refreshToken) {
+        if (!token && !refreshToken) {
             return res.status(401).send('Access Denied. No token provided.');
         }
 
         try {
-            const decoded = jwt.verify(accessToken, this.secretKey);
-            req.user = decoded.user;
+            const decoded = jwt.verify(token, this.secretKey);
+            req.user = decoded;
             next();
         } catch (error) {
             if (!refreshToken) {
@@ -24,11 +25,11 @@ class TokenService {
 
             try {
                 const decoded = jwt.verify(refreshToken, this.secretKey);
-                const accessToken = jwt.sign({ id: decoded.user.id, login: decoded.user.login  }, this.secretKey, { expiresIn: '1h' });
+                const token = jwt.sign({ id: decoded.user.id, login: decoded.user.login  }, this.secretKey, { expiresIn: '1h' });
 
                 res
                     .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' })
-                    .header('Authorization', accessToken)
+                    .header('Authorization', token)
                     .send(decoded.user);
             } catch (error) {
                 return res.status(400).send('Invalid refreshToken.');

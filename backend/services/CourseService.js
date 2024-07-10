@@ -13,13 +13,19 @@ class CourseService {
     async getUserCourseById(id){
       return await this.courseModel.getUserCourseById(id);
     }
+    async getCourseUserById(id){
+      return await this.courseModel.getCourseUserById(id);
+    }
+    async getCourseLessonById(id){
+      return await this.courseModel.getCourseLessonById(id);
+    }
   
     async createCourse(courseData) {
-      const course = {
-        ...courseData,
-        status: 'Запланирован'
-      };
-      return await this.courseModel.createCourse(course);
+      // const course = {
+      //   ...courseData,
+      //   status: 'Запланирован'
+      // };
+      return await this.courseModel.createCourse(courseData);
     }
   
     async createUserCourse(user_course) {

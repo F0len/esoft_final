@@ -37,6 +37,32 @@ class CourseController {
       }
     };
 
+    getCourseUserById = async (req, res) => {
+      try {
+        const id = req.user.id;
+        const course = await this.courseService.getCourseUserById(id);
+        if (!course) {
+          return res.status(404).json({ error: 'course not found' });
+        }
+        res.status(200).json(course);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
+
+    getCourseLessonById = async (req, res) => {
+      try {
+        const { id } = req.params;
+        const course = await this.courseService.getCourseLessonById(id);
+        if (!course) {
+          return res.status(404).json({ error: 'course not found' });
+        }
+        res.status(200).json(course);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
+
     createUserCourse = async (req, res) => {
       try {
         const userCourseData = req.body;
