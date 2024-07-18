@@ -1,13 +1,14 @@
 const express = require('express');
 
-function createFilesRouter(filesController) {
+function createFilesRouter(filesController,tokenService) {
   const router = express.Router();
 
-  router.get('/', filesController.getAllFiles);
-  router.get('/:id', filesController.getFileById);
-  router.post('/', filesController.createFile);
-  router.put('/:id', filesController.updateFile);
-  router.delete('/:id', filesController.deleteFile);
+  router.get('/', tokenService.authenticate, filesController.getAllFiles);
+  router.get('/:id',tokenService.authenticate, filesController.getFileById);
+  router.post('/upload',tokenService.authenticate, filesController.createLessonFile);
+  router.put('/:id',tokenService.authenticate, filesController.updateFile);
+  router.delete('/:id',tokenService.authenticate, filesController.deleteFile);
+  
 
   return router;
 }

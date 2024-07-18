@@ -7,6 +7,7 @@ const CourseForm = ({ course, onSubmit }) => {
   const [description, setDescription] = useState('');
   const [date_start, setStartDate] = useState('');
   const [status, setStatus] = useState('');
+  const [telegram, setTelegram] = useState('');
 
   useEffect(() => {
     if (course) {
@@ -14,12 +15,13 @@ const CourseForm = ({ course, onSubmit }) => {
       setDescription(course.description);
       setStartDate(moment(course.date_start).tz('Asia/Yekaterinburg').format('YYYY-MM-DD'));
       setStatus(course.status);
+      setTelegram(course.telegram);
     }
   }, [course]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ name: name, description, date_start, status });
+    onSubmit({ name: name, description: description, date_start:date_start, status:status, telegram: telegram });
   };
 
   return (
@@ -32,6 +34,7 @@ const CourseForm = ({ course, onSubmit }) => {
           onChange={(e) => setName(e.target.value)}
           fullWidth
           margin="normal"
+          required
         />
         <TextField
           label="Описание"
@@ -51,9 +54,19 @@ const CourseForm = ({ course, onSubmit }) => {
           InputLabelProps={{
             shrink: true,
           }}
+          required
         />
-        <FormControl fullWidth>
-        <InputLabel>Статус</InputLabel>
+        <TextField
+          label="Телеграм для связи"
+          value={telegram}
+          sx={{ mb: 2 }}
+          onChange={(e) => setTelegram(e.target.value)}
+          fullWidth
+          margin="normal"
+          required
+        />
+        <FormControl fullWidth required>
+          <InputLabel>Статус</InputLabel>
           <Select
             value={status}
             label="Статус"
@@ -61,19 +74,21 @@ const CourseForm = ({ course, onSubmit }) => {
             fullWidth
             margin="normal"
             displayEmpty
+            required
           >
             <MenuItem value="Запланирован">Запланирован</MenuItem>
             <MenuItem value="Идёт">Идёт</MenuItem>
             <MenuItem value="Закончен">Закончен</MenuItem>
           </Select>
         </FormControl>
-
+  
         <Box mt={2} display="flex" justifyContent="space-between">
           <Button type="submit" variant="contained">Сохранить</Button>
         </Box>
       </form>
     </Box>
   );
+  
 };
 
 export default CourseForm;

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography } from '@mui/material';
-import api from '../api';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux'
 import {login} from '../redux/authSlice'
+import { apiLogin } from '../services/api';
 
 const LoginForm = () => {
   const [login_, setLogin] = useState('');
@@ -15,7 +14,7 @@ const LoginForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:3000/api/login', { login: login_, password });
+      const response = await apiLogin({ login: login_, password })
       dispatch(login(response.data));
      
       const token = response.headers.getAuthorization();
@@ -23,7 +22,7 @@ const LoginForm = () => {
       navigate('/courses');
     } catch (error) {
       console.error('Error logging in', error);
-      alert('Failed to log in. Please try again.');
+      alert('Failed to log in. Please try ag1111ain.');
     }
   };
 

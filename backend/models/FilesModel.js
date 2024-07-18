@@ -11,8 +11,11 @@ class FilesModel {
       return await this.knex('files').where('id', id).first();
     }
   
-    async createFile(file) {
-      return await this.knex('files').insert(file).returning('*');
+    async createFile(fileData) {
+      return await this.knex('files').insert(fileData).returning('*');
+    }
+    async createLessonFile(lessonFileData) {
+      return await this.knex('lesson_files').insert(lessonFileData);
     }
   
     async updateFile(id, file) {

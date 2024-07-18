@@ -14,10 +14,11 @@ import LessonDetail from './components/LessonDetail';
 import HomeworkDetail from './components/HomeworkDetail';
 import CourseList from './pages/CourseList';
 import CourseDetail from './components/CourseDetail';
+import AllCoursePage from './pages/AllCoursePage';
 
 const App = () => {
   const user = useSelector((state) => state.auth.user);
-  const role = 'student';
+  const role = 'admin';
   return (
     <Router>
       <Routes>
@@ -31,10 +32,10 @@ const App = () => {
             <Route path="users" element={<UserManagement />} />
             <Route path="courses" element={<CoursePageAdmin />} />
           </Route>
-          <Route path="/courses" element={<CoursePage />} />
+          <Route path="/courses" element={<AllCoursePage/>} />
           <Route path="/my-courses" element={<CourseList />} />
           <Route exact path="/my-courses" element={MyCourses} />
-          <Route exact path="/my-courses/:id" element={<CoursePage />} />
+          <Route exact path="/my-courses/:id" element={<CoursePage role={role} />} />
           <Route exact path="/lessons/:id" element={LessonDetail} />
           <Route exact path="/homeworks/:id" element={HomeworkDetail} />
 

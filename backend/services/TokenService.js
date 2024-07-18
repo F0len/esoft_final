@@ -8,13 +8,13 @@ class TokenService {
     authenticate = (req, res, next) => {
         const accessToken = req.headers['authorization'];
         const refreshToken = req.cookies['refreshToken'];
-        const token = accessToken.split(' ')[1];
-
-        if (!token && !refreshToken) {
+        
+        if (!accessToken && !refreshToken) {
             return res.status(401).send('Access Denied. No token provided.');
         }
-
+        
         try {
+            const token = accessToken.split(' ')[1];
             const decoded = jwt.verify(token, this.secretKey);
             req.user = decoded;
             next();
@@ -25,14 +25,14 @@ class TokenService {
 
             try {
                 const decoded = jwt.verify(refreshToken, this.secretKey);
-                const token = jwt.sign({ id: decoded.user.id, login: decoded.user.login  }, this.secretKey, { expiresIn: '1h' });
-
+                const token = jwt.sign({ id: decoded.id, login: decoded.login  }, this.secretKey, { expiresIn: '30m' });
+                req.user = decoded;
                 res
-                    .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict' })
-                    .header('Authorization', token)
-                    .send(decoded.user);
+                    .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'strict',  maxAge: 7 * 24 * 60 * 60 * 1000})
+                    .header('Authorization', token);
+                next();
             } catch (error) {
-                return res.status(400).send('Invalid refreshToken.');
+                return res.status(401).send('Access Denied.');
             }
         }
     };

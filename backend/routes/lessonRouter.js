@@ -1,13 +1,13 @@
 const express = require('express');
 
-function createLessonRouter(lessonController) {
+function createLessonRouter(lessonController,tokenService) {
   const router = express.Router();
 
-  router.get('/', lessonController.getAllLessons);
-  router.get('/:id', lessonController.getLessonById);
-  router.post('/', lessonController.createLesson);
-  router.put('/:id', lessonController.updateLesson);
-  router.delete('/:id', lessonController.deleteLesson);
+  router.get('/',tokenService.authenticate,lessonController.getAllLessons);
+  router.get('/:id',tokenService.authenticate, lessonController.getLessonById);
+  router.post('/',tokenService.authenticate, lessonController.createLesson);
+  router.put('/:id',tokenService.authenticate, lessonController.updateLesson);
+  router.delete('/:id',tokenService.authenticate, lessonController.deleteLesson);
 
   return router;
 }

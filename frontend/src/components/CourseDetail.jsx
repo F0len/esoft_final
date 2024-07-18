@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { CircularProgress, Typography, Box, Button, List, ListItem, ListItemText, ListItemButton } from '@mui/material';
-import axios from 'axios';
 import CreateLessonDialog from './CreateLessonDialog';
 import CreateHomeworkDialog from './CreateHomeworkDialog';
 import { getLessonsByCourseId, getHomeworkByCourseId } from '../services/api';
@@ -10,9 +9,11 @@ const CourseDetail = ({ role }) => {
   const { id } = useParams();
   
   const [items, setItems] = useState([]);
-  console.log(items)
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [openLessonDialog, setOpenLessonDialog] = useState(false);
+
+  const [openHomeworkDialog, setOpenHomeworkDialog] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +43,22 @@ const CourseDetail = ({ role }) => {
     setSelectedItem(item);
   };
 
+  const handleOpenLessonDialog = () => {
+    setOpenLessonDialog(true);
+  };
+
+  const handleCloseLessonDialog = () => {
+    setOpenLessonDialog(false);
+  };
+
+  const handleOpenHomeworkDialog = () => {
+    setOpenHomeworkDialog(true);
+  };
+
+  const handleCloseHomeworkDialog = () => {
+    setOpenHomeworkDialog(false);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -50,7 +67,7 @@ const CourseDetail = ({ role }) => {
     <Box sx={{ display: 'flex' }}>
       <Box
         sx={{
-          width: '200px',
+          width: '300px',
           flexShrink: 0,
           borderRight: '1px solid #ddd',
           height: '100vh',
@@ -58,6 +75,7 @@ const CourseDetail = ({ role }) => {
           p: 2,
         }}
       >
+      
         <List>
           {items.map((item) => (
             <ListItem key={item.id} disablePadding>
@@ -73,6 +91,16 @@ const CourseDetail = ({ role }) => {
         component="main"
         sx={{ flexGrow: 1, p: 3 }}
       >
+          {['teacher', 'admin'].includes(role) && (
+          <Box sx={{ marginBottom: 2 }}>
+            <Button variant="contained" onClick={handleOpenLessonDialog} sx={{ marginRight: 1 }}>
+              Создать лекцию
+            </Button>
+            <Button variant="contained" onClick={handleOpenHomeworkDialog}>
+              Создать домашнее задание
+            </Button>
+          </Box>
+        )}
         {selectedItem ? (
           <Box>
             <Typography variant="h4">{selectedItem.name}</Typography>
@@ -97,6 +125,9 @@ const CourseDetail = ({ role }) => {
           <Typography variant="h6">Выберите лекцию или задание из меню</Typography>
         )}
       </Box>
+
+      <CreateLessonDialog open={openLessonDialog} onClose={handleCloseLessonDialog} courseId={id} />
+      <CreateHomeworkDialog open={openHomeworkDialog} onClose={handleCloseHomeworkDialog} courseId={id} />
     </Box>
   );
 };

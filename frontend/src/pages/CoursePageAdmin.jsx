@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Button, Modal, Box, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import axios from 'axios';
-import api from '../api';
+import { getCourses,createCourses, updateCourses, deleteCourses } from '../services/api';
 import CourseForm from '../components/CourseForm';
 import ParticipantsModal from '../components/ParticipantsModal';
 import moment from 'moment-timezone';
-import { IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+
 const modalStyle = {
   position: 'absolute',
   top: '50%',
@@ -20,7 +18,7 @@ const CoursePageAdmin = () => {
   const [openCourseForm, setOpenCourseForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
   const [openParticipants, setOpenParticipants] = useState(false);
-  console.log(openParticipants);
+
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   useEffect(() => {
@@ -29,7 +27,7 @@ const CoursePageAdmin = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await api.get('/courses');
+      const response = await getCourses();
       setCourses(response.data);
     } catch (error) {
       console.error('Error fetching courses', error);
@@ -38,9 +36,9 @@ const CoursePageAdmin = () => {
 
   const handleCreateOrEditCourse = async (course) => {
     if (editingCourse) {
-      await axios.put(`http://127.0.0.1:3000/api/courses/${editingCourse.id}`, course);
+      await updateCourses(editingCourse.id, course)
     } else {
-      await axios.post('http://127.0.0.1:3000/api/courses', course);
+      await createCourses(course);
     }
     fetchCourses();
     setOpenCourseForm(false);
@@ -48,7 +46,7 @@ const CoursePageAdmin = () => {
   };
 
   const handleDeleteCourse = async (id) => {
-    await axios.delete(`http://127.0.0.1:3000/api/courses/${id}`);
+    await deleteCourses(id);
     fetchCourses();
   };
   const handleClose = () => {
@@ -68,6 +66,7 @@ const CoursePageAdmin = () => {
             <Typography>{course.description}</Typography>
             <Typography>Дата старта: {moment(course.date_start).tz('Asia/Yekaterinburg').format('DD-MM-YYYY')}</Typography>
             <Typography>Статус: {course.status}</Typography>
+            <Typography>Телеграм: {course.telegram}</Typography>
             <Box display="flex" justifyContent="space-between" mt={2}>
               <Button variant="outlined" onClick={() => { setEditingCourse(course); setOpenCourseForm(true); }}>Изменить</Button>
               <Button variant="contained" color="error" onClick={() => handleDeleteCourse(course.id)}>Удалить</Button>

@@ -7,11 +7,11 @@ class AuthService {
     this.secretKey = secretKey;
   }
   generateAccessToken(user) {
-    return jwt.sign({ id: user.id, login: user.login }, this.secretKey, { expiresIn: '12h' });
+    return jwt.sign({ id: user.id, login: user.login }, this.secretKey, { expiresIn: '30m' });
   }
 
   generateRefreshToken(user) {
-    return jwt.sign({ id: user.id, login: user.login }, this.secretKey, { expiresIn: '2d' });
+    return jwt.sign({ id: user.id, login: user.login }, this.secretKey, { expiresIn: '7d' });
   }
   
   async login(login, password) {
@@ -28,6 +28,7 @@ class AuthService {
     return { accessToken,refreshToken , user };
   }
 
+  //уже скорее всего не нужен
   async refreshToken(refreshToken) {
     if (!refreshToken) {
       throw new Error('Access Denied. No refresh token provided.');

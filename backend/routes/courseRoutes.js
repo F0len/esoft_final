@@ -3,20 +3,19 @@ const express = require('express');
 function createCourseRouter(courseController,tokenService) {
   const router = express.Router();
 
-  router.get('/:id/lesson', tokenService.authenticate ,courseController.getCourseLessonById);
+  router.get('/:id/lesson', tokenService.authenticate, courseController.getCourseLessonById);
   router.get('/:id/homework', tokenService.authenticate ,courseController.getCourseHomeworkById);
-  router.get('/', courseController.getAllCourses);
+  router.get('/',tokenService.authenticate, courseController.getAllCourses);
   router.get('/my', tokenService.authenticate ,courseController.getCourseUserById);
-  router.get('/:id', courseController.getCourseById);
+  router.get('/:id',tokenService.authenticate, courseController.getCourseById);
  
-  router.post('/', courseController.createCourse);
-  router.put('/:id', courseController.updateCourse);
-  router.delete('/:id', courseController.deleteCourse);
-  router.get('/participants/:id', courseController.getUserCourseById);
-  router.post('/participants', courseController.createUserCourse);
-  router.delete('/participants/:course_id/:user_id', courseController.deleteUserCourse);
+  router.post('/',tokenService.authenticate, courseController.createCourse);
+  router.put('/:id',tokenService.authenticate, courseController.updateCourse);
+  router.delete('/:id',tokenService.authenticate, courseController.deleteCourse);
+  router.get('/participants/:id',tokenService.authenticate, courseController.getUserCourseById);
+  router.post('/participants', tokenService.authenticate,courseController.createUserCourse);
+  router.delete('/participants/:course_id/:user_id',tokenService.authenticate, courseController.deleteUserCourse);
   
-
   return router;
 }
 

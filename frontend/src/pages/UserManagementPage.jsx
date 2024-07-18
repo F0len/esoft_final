@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel, Checkbox, ListItemText } from '@mui/material';
-import axios from 'axios';
+import { getUsers, createUser, updateUser, deleteUser } from '../services/api';
 import { ruRU } from '@mui/x-data-grid/locales';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  console.log(selectedUser);
   const [open, setOpen] = useState(false);
   const roles = ['admin', 'teacher', 'student'];
 
@@ -17,10 +16,10 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:3000/api/users');
+      const response = await getUsers();
       const transformedUsers = response.data.map(user => ({
         ...user,
-        roles: user.roles.join(', ') // Transform array to string
+        roles: user.roles.join(', ')
       }));
       setUsers(transformedUsers);
     } catch (error) {
@@ -46,9 +45,9 @@ const UserManagement = () => {
       };
 
       if (selectedUser.id) {
-        await axios.put(`http://127.0.0.1:3000/api/users/${selectedUser.id}`, userToSave);
+        await updateUser(selectedUser.id,userToSave);
       } else {
-        await axios.post('http://127.0.0.1:3000/api/users', userToSave);
+        await createUser(userToSave);
       }
       fetchUsers();
       handleClose();
@@ -59,7 +58,7 @@ const UserManagement = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:3000/api/users/${id}`);
+      await deleteUser(id);
       fetchUsers();
     } catch (error) {
       console.error('Failed to delete user', error);
