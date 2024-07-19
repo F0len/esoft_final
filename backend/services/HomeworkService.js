@@ -12,6 +12,7 @@ class HomeworkService {
     }
   
     async createHomework(homeworkData) {
+      homeworkData.form = JSON.stringify(homeworkData.form);
       return await this.homeworkModel.createHomework(homeworkData);
     }
   

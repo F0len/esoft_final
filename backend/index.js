@@ -38,9 +38,15 @@ const createCourseRouter = require('./routes/courseRoutes');
 const createLessonRouter = require('./routes/lessonRouter');
 const createHomeworkRouter = require('./routes/homeworkRouter');
 const createFilesRouter = require('./routes/filesRouter');
+const createHomeworkResponseRouter = require('./routes/HomeworkResponseRouter');
+
 const FilesModel = require('./models/FilesModel');
 const FilesService = require('./services/FilesService');
 const FilesController = require('./controllers/FilesController');
+
+const HomeworkResponseModel = require('./models/HomeworkResponseModel');
+const HomeworkResponseService = require('./services/HomeworkResponseService');
+const HomeworkResponseController = require('./controllers/HomeworkResponseController');
 
 
 const app = express();
@@ -69,6 +75,7 @@ const courseModel = new CourseModel(knex);
 const lessonModel = new LessonModel(knex);
 const homeworkModel = new HomeworkModel(knex);
 const filesModel = new FilesModel(knex);
+const homeworkResponseModel = new HomeworkResponseModel(knex);
 
 //Services
 const authService = new AuthService(userModel, secretKey);
@@ -77,6 +84,7 @@ const courseService = new CourseService(courseModel);
 const lessonService = new LessonService(lessonModel);
 const homeworkService = new HomeworkService(homeworkModel);
 const filesService = new FilesService(filesModel);
+const homeworkResponseService = new HomeworkResponseService(homeworkResponseModel);
 
 //Controllers
 const authController = new AuthController(authService);
@@ -85,6 +93,7 @@ const courseController = new CourseController(courseService);
 const lessonController = new LessonController(lessonService);
 const homeworkController = new HomeworkController(homeworkService);
 const filesController = new FilesController(filesService);
+const homeworkResponseController = new HomeworkResponseController(homeworkResponseService);
 
 //Routes
 app.use('/api', createAuthRouter(authController));
@@ -93,6 +102,7 @@ app.use('/api/courses', createCourseRouter(courseController, tokenService));
 app.use('/api/lessons', createLessonRouter(lessonController, tokenService));
 app.use('/api/homeworks', createHomeworkRouter(homeworkController,tokenService));
 app.use('/api/files', upload.fields([{ name: 'video' }, { name: 'files' }]) ,createFilesRouter(filesController, tokenService));
+app.use('/api/homework-response', createHomeworkResponseRouter(homeworkResponseController,tokenService));
 
 
 

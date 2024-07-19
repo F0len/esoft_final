@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS public.lesson
 
 CREATE TABLE IF NOT EXISTS public.homework
 (
-    "Id" serial,
+    "id" serial,
     task text NOT NULL,
     deadline date NOT NULL,
     form json,

@@ -23,6 +23,7 @@ api.interceptors.response.use((response) => {
   if (error.response && error.response.status === 401) {
     
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     window.location.href = '/login';
   }
   return Promise.reject(error);
@@ -40,6 +41,11 @@ export const deleteUser = (id) => api.delete(`/users/${id}`);
 export const createCourses = (coursesData) => api.post(`/courses`, coursesData);
 export const updateCourses = (id,coursesData) => api.put(`/courses/${id}`, coursesData);
 export const deleteCourses = (id) => api.delete(`/courses/${id}`);
+
+export const getCoursesParticipants = (id) =>  api.get(`/courses/participants/${id}`);
+export const getUserSmallInfo = () =>  api.get(`/users/small_info`);
+export const addCoursesParticipants = (participantsData) => api.post(`/courses/participants`, participantsData);
+export const deleteCoursesParticipants = (courseId,participantId) => api.delete(`/courses/participants/${courseId}/${participantId}`);
 
 export const getCourses = () =>  api.get('/courses');
 export const getMyCourses = () =>  api.get('/courses/my');
@@ -63,3 +69,7 @@ export const uploadFiles = (formData) => {
   });
 };
 
+export const createHomeworkResponses = (homeworkResponsesData) => api.post('/homework-response', homeworkResponsesData);
+export const getHomeworkResponsesById = (homeworkId ) => api.get(`/homework-response/my/${homeworkId}`);
+export const updateHomeworkResponse = (id,homeworkResponsesData) => api.put(`/homework-response/${id}`, homeworkResponsesData);
+export const deleteHomeworkResponse = (id) => api.delete(`/homework-response/${id}`);

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
 import { createLesson, uploadFiles } from '../services/api';
+import ReactQuill from 'react-quill-new';
+import 'react-quill/dist/quill.snow.css';
 
 const CreateLessonDialog = ({ open, onClose, courseId }) => {
   const [lessonData, setLessonData] = useState({
@@ -14,6 +16,9 @@ const CreateLessonDialog = ({ open, onClose, courseId }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const handleQuillChange = (value) => {
+    handleChange({ target: { name: 'description', value } });
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLessonData({ ...lessonData, [name]: value });
@@ -60,30 +65,28 @@ const CreateLessonDialog = ({ open, onClose, courseId }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>Создать лекцию</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
           margin="dense"
           name="name"
-          label="Name"
+          label="Имя"
           fullWidth
           value={lessonData.name}
           onChange={handleChange}
         />
-        <TextField
-          margin="dense"
-          name="description"
-          label="Description"
-          fullWidth
+         <ReactQuill
+          theme="snow"
           value={lessonData.description}
-          onChange={handleChange}
+          onChange={handleQuillChange}
+          style={{ marginBottom: '16px', width: '100%' }}
         />
         <TextField
           margin="dense"
           name="scheduled_date"
-          label="Scheduled Date"
+          label="Дата"
           type="date"
           fullWidth
           value={lessonData.scheduled_date}
@@ -95,7 +98,7 @@ const CreateLessonDialog = ({ open, onClose, courseId }) => {
         <TextField
           margin="dense"
           name="time"
-          label="Time"
+          label="Время"
           type="time"
           fullWidth
           value={lessonData.time}
@@ -146,7 +149,7 @@ const CreateLessonDialog = ({ open, onClose, courseId }) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">
+        <Button onClick={onClose} color="error">
           Закрыть
         </Button>
         <Button onClick={handleSubmit} color="primary" disabled={loading}>

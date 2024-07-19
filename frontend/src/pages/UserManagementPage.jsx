@@ -28,7 +28,7 @@ const UserManagement = () => {
   };
 
   const handleOpen = (user = null) => {
-    setSelectedUser(user ? { ...user, roles: user.roles.split(', ') } : { roles: [] }); // Transform string back to array
+    setSelectedUser(user ? { ...user, roles: user.roles.split(', ') } : { roles: [] });
     setOpen(true);
   };
 
@@ -93,7 +93,7 @@ const UserManagement = () => {
         pageSize={10}
       />
 
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>{selectedUser ? 'Редактировать пользователя' : 'Добавить пользователя'}</DialogTitle>
         <DialogContent>
           <TextField
@@ -146,8 +146,8 @@ const UserManagement = () => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Отмена</Button>
-          <Button onClick={handleSave}>Сохранить</Button>
+          <Button color='error' onClick={handleClose}>Отмена</Button>
+          <Button color='success' onClick={handleSave}>Сохранить</Button>
         </DialogActions>
       </Dialog>
     </div>

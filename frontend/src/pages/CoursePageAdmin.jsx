@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Button, Modal, Box, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getCourses,createCourses, updateCourses, deleteCourses } from '../services/api';
 import CourseForm from '../components/CourseForm';
 import ParticipantsModal from '../components/ParticipantsModal';
 import moment from 'moment-timezone';
 
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
 
-};
 const CoursePageAdmin = () => {
   const [courses, setCourses] = useState([]);
   const [openCourseForm, setOpenCourseForm] = useState(false);
@@ -55,12 +50,12 @@ const CoursePageAdmin = () => {
 
   return (
     <Container>
-      <Typography variant="h4">Курсы</Typography>
-      <Button variant="contained" onClick={() => setOpenCourseForm(true)}>Создать курс</Button>
+      <Typography variant="h4" style={{ marginBottom: '20px' }}>Курсы</Typography>
+      <Button variant="contained" style={{ backgroundColor: '#3f51b5', marginBottom: '20px' }} onClick={() => setOpenCourseForm(true)}>Создать курс</Button>
       {courses.map(course => (
         <Accordion key={course.id}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>{course.name}</Typography>
+            <Typography style={{ fontWeight: 'bold' }}>{course.name}</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography>{course.description}</Typography>
@@ -75,17 +70,23 @@ const CoursePageAdmin = () => {
           </AccordionDetails>
         </Accordion>
       ))}
-      <Modal open={openCourseForm} onClose={() => { setOpenCourseForm(false); setEditingCourse(null); }}>
-        <Box sx={modalStyle}>
-          <CourseForm course={editingCourse} onSubmit={handleCreateOrEditCourse} />
-        </Box>
-      </Modal>
-      <Modal open={openParticipants} onClose={handleClose}>
-        <Box sx={modalStyle}>
-          <ParticipantsModal course={selectedCourse} />
-        </Box>
+     <Dialog open={openCourseForm} onClose={() => { setOpenCourseForm(false); setEditingCourse(null); }} fullWidth maxWidth="sm">
+        <DialogTitle>{editingCourse ? 'Редактировать курс' : 'Создать курс'}</DialogTitle>
+        <DialogContent>
+        
+            <CourseForm course={editingCourse} onSubmit={handleCreateOrEditCourse} />
+        
+        </DialogContent>
+      </Dialog>
 
-      </Modal>
+      <Dialog open={openParticipants} onClose={handleClose}>
+        <DialogTitle>Участники курса</DialogTitle>
+        <DialogContent>
+          
+            <ParticipantsModal course={selectedCourse} />
+          
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 };

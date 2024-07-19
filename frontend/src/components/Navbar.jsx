@@ -84,7 +84,7 @@ const MyAppBar = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout}>Выйти</MenuItem>
           </Menu>
         </Box>
       </Toolbar>

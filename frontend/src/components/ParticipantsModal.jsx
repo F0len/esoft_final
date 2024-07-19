@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { List, ListItem, ListItemText, Button, TextField, Box, Autocomplete } from '@mui/material';
+import { getCoursesParticipants, addCoursesParticipants, getUserSmallInfo, deleteCoursesParticipants } from '../services/api';
 
 const ParticipantsModal = ({ course }) => {
   const [participants, setParticipants] = useState([]);
@@ -15,71 +16,49 @@ const ParticipantsModal = ({ course }) => {
 
   const fetchParticipants = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:3000/api/courses/participants/${course.id}`);
-      if (!response.ok) {
-        throw new Error('Ошибка при получении участников');
-      }
-      const data = await response.json();
-      setParticipants(data);
+      const response = await getCoursesParticipants(course.id);
+      setParticipants(response.data);
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка при получении участников:', error);
     }
   };
-  
+
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:3000/api/users/small_info');
-      if (!response.ok) {
-        throw new Error('Ошибка при получении пользователей');
-      }
-      const data = await response.json();
-      setUsers(data);
+      const response = await getUserSmallInfo();
+      setUsers(response.data);
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка при получении пользователей:', error);
     }
   };
-  
+
   const handleAddParticipant = async () => {
     if (selectedUser) {
       try {
-        const response = await fetch('http://127.0.0.1:3000/api/courses/participants', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            user_id: selectedUser.id,
-            course_id: course.id
-          })
+        await addCoursesParticipants({
+          user_id: selectedUser.id,
+          course_id: course.id
         });
-        if (!response.ok) {
-          throw new Error('Ошибка при добавлении участника');
-        }
         setParticipants([...participants, selectedUser]);
         setSelectedUser(null);
       } catch (error) {
-        console.error('Ошибка:', error);
+        console.error('Ошибка при добавлении участника:', error);
       }
     }
   };
-  
+
   const handleRemoveParticipant = async (participantId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:3000/api/courses/participants/${course.id}/${participantId}`, {
-        method: 'DELETE'
-      });
-      if (!response.ok) {
-        throw new Error('Ошибка при удалении участника');
-      }
+      await deleteCoursesParticipants(course.id, participantId);
       setParticipants(participants.filter(p => p.id !== participantId));
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка при удалении участника:', error);
     }
   };
   
 
   return (
-    <Box sx={{ backgroundColor: 'white', p: 4, borderRadius: 1, boxShadow: 3, width: 400, maxHeight: '80vh', overflowY: 'auto' }}>
+    <Box sx={{ width: 400 }}>
       <List sx={{ maxHeight: '60vh', overflowY: 'auto' }}>
         {participants.map(participant => (
           <ListItem key={participant.id}>

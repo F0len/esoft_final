@@ -25,8 +25,7 @@ const CourseForm = ({ course, onSubmit }) => {
   };
 
   return (
-    <Box sx={{ backgroundColor: 'white', p: 4, borderRadius: 1, boxShadow: 3 }}>
-      <Typography variant="h6" mb={2}>{course ? 'Редактировать курс' : 'Создать курс'}</Typography>
+    <>
       <form onSubmit={handleSubmit}>
         <TextField
           label="Название курса"
@@ -41,6 +40,7 @@ const CourseForm = ({ course, onSubmit }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           fullWidth
+          multiline 
           margin="normal"
         />
         <TextField
@@ -86,7 +86,7 @@ const CourseForm = ({ course, onSubmit }) => {
           <Button type="submit" variant="contained">Сохранить</Button>
         </Box>
       </form>
-    </Box>
+      </>
   );
   
 };

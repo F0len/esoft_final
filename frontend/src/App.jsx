@@ -10,10 +10,7 @@ import { Outlet } from 'react-router-dom';
 import MainLayout from './components/MainLayout';
 import MyCourses from './pages/MyCourses';
 import CoursePage from './pages/CoursePage';
-import LessonDetail from './components/LessonDetail';
-import HomeworkDetail from './components/HomeworkDetail';
 import CourseList from './pages/CourseList';
-import CourseDetail from './components/CourseDetail';
 import AllCoursePage from './pages/AllCoursePage';
 
 const App = () => {
@@ -36,8 +33,7 @@ const App = () => {
           <Route path="/my-courses" element={<CourseList />} />
           <Route exact path="/my-courses" element={MyCourses} />
           <Route exact path="/my-courses/:id" element={<CoursePage role={role} />} />
-          <Route exact path="/lessons/:id" element={LessonDetail} />
-          <Route exact path="/homeworks/:id" element={HomeworkDetail} />
+
 
         </Route>
       </Routes>

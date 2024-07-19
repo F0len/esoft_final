@@ -19,7 +19,7 @@ const AllCoursePage = ({ role }) => {
   };
   return (
     <>
-      <Box sx={{ textAlign: 'center', mt: 4 }}>
+      <Box sx={{ textAlign: 'center', mt: 4, ml:18, mr:18 }}>
       <Typography variant="h4" gutterBottom>
         Курсы
       </Typography>

@@ -53,11 +53,11 @@ class CourseController {
     getCourseLessonById = async (req, res) => {
       try {
         const { id } = req.params;
-        const course = await this.courseService.getCourseLessonById(id);
-        if (!course) {
+        const lesson = await this.courseService.getCourseLessonById(id);
+        if (!lesson) {
           return res.status(404).json({ error: 'course not found' });
         }
-        res.status(200).json(course);
+        res.status(200).json(lesson);
       } catch (error) {
         res.status(500).json({ error: error.message });
       }

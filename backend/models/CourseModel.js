@@ -40,12 +40,21 @@ class CourseModel {
     }
     async getCourseLessonById(id) {
       try {
-        const course = await this.knex('course')
+        const lesson = await this.knex('course')
           .join('lesson', 'course.id', '=', 'lesson.course_id')
           .select('lesson.*')
           .where('course.id', id);
+          const files = await this.knex('course')
+          .join('lesson', 'course.id', '=', 'lesson.course_id')
+          .join('lesson_files', 'lesson.id', '=', 'lesson_files.lesson_id')
+          .join('files', 'lesson_files.file_id', '=', 'files.id')
+          .select('files.*', 'lesson.id as lessonId')
+          .where('course.id', id);
     
-        return course;
+        return {
+          lesson,
+          files
+        };
       } catch (err) {
         console.error('Error fetching lesson:', err);
         throw err;
