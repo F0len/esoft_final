@@ -11,8 +11,9 @@ class HomeworkResponseModel {
 
   async getAllResponsesByHomeworkId(homeworkId) {
     return await this.knex('homework_response')
-      .where('homework_id', homeworkId)
-      .select('*');
+    .join('user', 'user.id', '=', 'homework_response.user_id')
+      .where('homework_response.homework_id', homeworkId)
+      .select('homework_response.*', 'user.name', 'user.telegram');
   }
 
   async createResponse(responseData) {

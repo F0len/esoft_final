@@ -97,7 +97,7 @@ const homeworkResponseController = new HomeworkResponseController(homeworkRespon
 
 //Routes
 app.use('/api', createAuthRouter(authController));
-app.use('/api/users', createUserRouter(userController));
+app.use('/api/users', createUserRouter(userController, tokenService));
 app.use('/api/courses', createCourseRouter(courseController, tokenService));
 app.use('/api/lessons', createLessonRouter(lessonController, tokenService));
 app.use('/api/homeworks', createHomeworkRouter(homeworkController,tokenService));

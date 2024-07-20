@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../redux/authSlice';
 
-const MyAppBar = () => {
+const MyAppBar = ({roles}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  console.log(roles);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -32,6 +33,9 @@ const MyAppBar = () => {
   const handleAdminMenuClose = () => {
     setAdminAnchorEl(null);
   };
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
 
   return (
     <AppBar position="static" sx={{ backgroundColor: 'white', color: 'black', mb: 2 }}>
@@ -40,6 +44,8 @@ const MyAppBar = () => {
           <SchoolIcon />
         </Box>
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-start', ml: 2 }}>
+          {['admin'].some(role => roles.includes(role)) &&
+          <>
           <Button
             color="inherit"
             onClick={handleAdminMenuOpen}
@@ -62,6 +68,9 @@ const MyAppBar = () => {
             <MenuItem onClick={() => { handleAdminMenuClose(); navigate('/admin/users'); }}>Пользователи</MenuItem>
             <MenuItem onClick={() => { handleAdminMenuClose(); navigate('/admin/courses'); }}>Курсы</MenuItem>
           </Menu>
+          </>
+          }
+          
           <Button color="inherit" onClick={() => navigate('/courses')}>Курсы</Button>
           <Button color="inherit" onClick={() => navigate('/my-courses')}>Мои курсы</Button>
         </Box>
@@ -84,7 +93,9 @@ const MyAppBar = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
+            <MenuItem onClick={handleProfileClick}>Профиль</MenuItem>
             <MenuItem onClick={handleLogout}>Выйти</MenuItem>
+            
           </Menu>
         </Box>
       </Toolbar>

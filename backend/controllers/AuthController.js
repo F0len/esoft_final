@@ -5,7 +5,7 @@ class AuthController {
 
   registerUser = async (req, res) => {
     try {
-      const user = await this.authService.register(req.body);
+      const user = await this.authService.registerUser(req.body);
       res.status(201).json(user);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -30,19 +30,7 @@ class AuthController {
     }
   };
 
-  refreshToken = async (req, res) => {
-    const refreshToken = req.cookies['refreshToken'];
-  
-    try {
-      const { newAccessToken, user } = await this.authService.refreshToken(refreshToken);
-
-      res
-        .header('Authorization', newAccessToken)
-        .status(200).json(user);
-    } catch (error) {
-      return res.status(400).send('Invalid refresh token.');
-    }
-  };
+ 
 }
 
 module.exports = AuthController;

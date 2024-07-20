@@ -30,11 +30,13 @@ api.interceptors.response.use((response) => {
 });
 
 export const apiLogin = (loginData) =>  api.post('/login', loginData);
+export const apiRegister = (registeData) =>  api.post('/register', registeData);
 
 
 export const getUsers = () =>  api.get('/users');
-export const createUser = (coursesData) => api.post(`/users`, coursesData);
-export const updateUser = (id,coursesData) => api.put(`/users/${id}`, coursesData);
+export const createUser = (userData) => api.post(`/users`, userData);
+export const updateUser = (id,userData) => api.put(`/users/${id}`, userData);
+export const updateUserWithoutRoles = (id,userData) => api.put(`/users/${id}`, userData);
 export const deleteUser = (id) => api.delete(`/users/${id}`);
 
 
@@ -53,6 +55,8 @@ export const getCourseById = (id) => api.get(`/my/${id}`);
 
 export const createLesson = (lessonData) => api.post('/lessons', lessonData);
 export const createHomework = (homeworkData) => api.post('/homeworks', homeworkData);
+export const deleteLesson = (id) => api.delete(`/lessons/${id}`);
+export const deleteHomework = (id) => api.delete(`/homeworks/${id}`);
 
 export const attachFileToLesson = (lessonId, fileData) => api.post(`/lesson-files/${lessonId}`, fileData);
 
@@ -71,5 +75,6 @@ export const uploadFiles = (formData) => {
 
 export const createHomeworkResponses = (homeworkResponsesData) => api.post('/homework-response', homeworkResponsesData);
 export const getHomeworkResponsesById = (homeworkId ) => api.get(`/homework-response/my/${homeworkId}`);
+export const getAllHomeworkResponsesById = (homeworkId ) => api.get(`/homework-response/homework/${homeworkId}`);
 export const updateHomeworkResponse = (id,homeworkResponsesData) => api.put(`/homework-response/${id}`, homeworkResponsesData);
 export const deleteHomeworkResponse = (id) => api.delete(`/homework-response/${id}`);

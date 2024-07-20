@@ -21,7 +21,16 @@ class UserController {
             res.status(400).json({ error: error.message });
         }
     };
-
+    
+    updateUserWithoutRoles = async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const user = await this.userService.updateUserWithoutRoles(userId, req.body);
+            res.status(200).json(user);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    };
     deleteUser = async (req, res) => {
         try {
             const { id } = req.params;

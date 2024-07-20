@@ -27,6 +27,12 @@ class UserService {
     }
     return await this.userModel.updateUser(id, user);
   }
+  async updateUserWithoutRoles(id, user) {
+    if (user.roles) {
+     delete user.roles;
+    }
+    return await this.userModel.updateUser(id, user);
+  }
 
   async deleteUser(id) {
     await this.userModel.deleteUser(id);

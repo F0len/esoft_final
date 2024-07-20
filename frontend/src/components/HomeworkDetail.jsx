@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, TextField, Button, Card, CardContent, IconButton, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Box, Typography, TextField, Button, Card, CardContent, IconButton } from '@mui/material';
 import DOMPurify from 'dompurify';
-import { createHomeworkResponses, getHomeworkResponsesById, updateHomeworkResponse, deleteHomeworkResponse } from '../services/api';
-import EditIcon from '@mui/icons-material/Edit';
+import { createHomeworkResponses, getHomeworkResponsesById, deleteHomeworkResponse } from '../services/api';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
-const HomeworkDetail = ({ selectedItem }) => {
+const HomeworkDetail = ({ selectedItem, onEditResponses, roles }) => {
   const [formValues, setFormValues] = useState({});
   const [initialValues, setInitialValues] = useState({});
   const [responses, setResponses] = useState([]);
-  const [editingResponseId, setEditingResponseId] = useState(null);
-  const [editedResponse, setEditedResponse] = useState({});
-
-  const statusOptions = [
-    'Отправлено',
-    'Взято в проверку',
-    'Отправлено на доработку',
-    'Проверено и зачтено',
-  ];
 
   useEffect(() => {
     if (selectedItem.form) {
@@ -58,27 +49,6 @@ const HomeworkDetail = ({ selectedItem }) => {
     }
   };
 
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditedResponse({ ...editedResponse, [name]: value });
-  };
-
-  const handleEditSubmit = async (responseId) => {
-    const updatePayload = {
-      comment: editedResponse.comment,
-      grade: editedResponse.grade,
-      status: editedResponse.status,
-    };
-    try {
-      const response = await updateHomeworkResponse(responseId, updatePayload);
-      console.log('Ответ сервера:', response.data);
-      setEditingResponseId(null);
-      fetchResponses();
-    } catch (error) {
-      console.error('Ошибка при редактировании ответа:', error.message);
-    }
-  };
-
   const handleDelete = async (responseId) => {
     try {
       await deleteHomeworkResponse(responseId);
@@ -92,9 +62,13 @@ const HomeworkDetail = ({ selectedItem }) => {
     <Box>
       <Typography variant="h4">{selectedItem.name}</Typography>
       <Typography variant="body1" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedItem.task) }} />
-      <Typography variant="button" sx={{ fontWeight: 'bold', color: 'red' }}>
+      <Typography variant="button" sx={{ fontWeight: 'bold', color: 'info.main', display: 'block' }}>
+        Доступно с: {new Date(selectedItem.scheduled_date).toLocaleString()}
+      </Typography>
+      <Typography variant="button" sx={{ fontWeight: 'bold', color: 'red', display: 'block' }}>
         Дедлайн: {new Date(selectedItem.deadline).toLocaleString()}
       </Typography>
+
       {selectedItem.form && (
         <Box>
           {JSON.parse(selectedItem.form).map((field, index) => (
@@ -117,80 +91,44 @@ const HomeworkDetail = ({ selectedItem }) => {
       )}
 
       <Box mt={4}>
+        {responses.length!=0 &&
+        <>
         <Typography variant="h5">Ваши ответы</Typography>
         {responses.map((response) => (
           <Card key={response.id} sx={{ marginBottom: '16px' }}>
             <CardContent>
-              {editingResponseId === response.id ? (
-                <Box>
-                  <TextField
-                    margin="dense"
-                    name="comment"
-                    label="Comment"
-                    type="text"
-                    fullWidth
-                    value={editedResponse.comment || ''}
-                    onChange={handleEditChange}
-                    style={{ marginBottom: '16px' }}
-                  />
-                  <TextField
-                    margin="dense"
-                    name="grade"
-                    label="Grade"
-                    type="text"
-                    fullWidth
-                    value={editedResponse.grade || ''}
-                    onChange={handleEditChange}
-                    style={{ marginBottom: '16px' }}
-                  />
-                  <FormControl fullWidth style={{ marginBottom: '16px' }}>
-                    <InputLabel>Status</InputLabel>
-                    <Select
-                      name="status"
-                      value={editedResponse.status || ''}
-                      onChange={handleEditChange}
-                      label="Status"
-                    >
-                      {statusOptions.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <Button onClick={() => handleEditSubmit(response.id)} color="primary">
-                    Сохранить
-                  </Button>
+              <Box>
+                {Object.entries(response.response).map(([key, value]) => (
+                  <Typography key={key}>
+                    <strong>{key}:</strong> {value}
+                  </Typography>
+                ))}
+                <Typography>
+                  <strong>Комментарий:</strong> {response.comment || 'N/A'}
+                </Typography>
+                <Typography>
+                  <strong>Оценка:</strong> {response.grade || 'N/A'}
+                </Typography>
+                <Typography>
+                  <strong>Статус:</strong> {response.status || 'N/A'}
+                </Typography>
+                <Box mt={2}>
+                  <IconButton onClick={() => handleDelete(response.id)}>
+                    <DeleteIcon color='error' />
+                  </IconButton>
                 </Box>
-              ) : (
-                <Box>
-                  {Object.entries(response.response).map(([key, value]) => (
-                    <Typography key={key}>
-                      <strong>{key}:</strong> {value}
-                    </Typography>
-                  ))}
-                  <Typography>
-                    <strong>Comment:</strong> {response.comment || 'N/A'}
-                  </Typography>
-                  <Typography>
-                    <strong>Grade:</strong> {response.grade || 'N/A'}
-                  </Typography>
-                  <Typography>
-                    <strong>Status:</strong> {response.status || 'N/A'}
-                  </Typography>
-                  <Box mt={2}>
-                    <IconButton onClick={() => { setEditingResponseId(response.id); setEditedResponse(response); }}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(response.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              )}
+              </Box>
             </CardContent>
           </Card>
         ))}
+        </>
+        }
+        {['teacher', 'admin'].some(role => roles.includes(role)) &&
+          <Button onClick={onEditResponses} color="secondary" variant="contained">
+            Посмотреть ответы
+          </Button>
+        }
+
       </Box>
     </Box>
   );

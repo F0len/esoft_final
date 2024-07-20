@@ -3,11 +3,12 @@ import Navbar from './Navbar';
 import { Outlet} from 'react-router-dom';
 import { Box } from '@mui/material';
 
-const MainLayout = () => {
+const MainLayout = ({roles}) => {
+    console.log(roles);
     return (
         <>
-            <Navbar />
-            <Box sx={{ pl: 4, pr: 4 }}>
+            <Navbar roles={roles} />
+            <Box sx={{ pl: 2, pr: 2 }}>
                 <Outlet />
             </Box>
         </>

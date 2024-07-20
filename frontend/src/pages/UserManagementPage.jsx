@@ -147,7 +147,7 @@ const UserManagement = () => {
         </DialogContent>
         <DialogActions>
           <Button color='error' onClick={handleClose}>Отмена</Button>
-          <Button color='success' onClick={handleSave}>Сохранить</Button>
+          <Button color='info' onClick={handleSave}>Сохранить</Button>
         </DialogActions>
       </Dialog>
     </div>

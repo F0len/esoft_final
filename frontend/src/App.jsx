@@ -8,33 +8,40 @@ import { useSelector } from 'react-redux';
 import ProtectedRoute from './ProtectedRoute';
 import { Outlet } from 'react-router-dom';
 import MainLayout from './components/MainLayout';
-import MyCourses from './pages/MyCourses';
 import CoursePage from './pages/CoursePage';
 import CourseList from './pages/CourseList';
 import AllCoursePage from './pages/AllCoursePage';
+import UserProfile from './pages/UserProfile';
+import RegisterPage from './pages/RegisterPage';
 
 const App = () => {
-  const user = useSelector((state) => state.auth.user);
-  const role = 'admin';
+  let user = useSelector((state) => state.auth.user);
+  let userRole = [];
+  if(user) { userRole= user.roles;}
   return (
     <Router>
       <Routes>
-
         <Route path="/" element={<Navigate to={user ? "/courses" : "/login"} />} />
 
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/forbidden" element={<ForbiddenPage />} />
-        <Route element={<MainLayout />}>
-          <Route path="/admin" element={<Outlet />}>
-            <Route path="users" element={<UserManagement />} />
-            <Route path="courses" element={<CoursePageAdmin />} />
+
+        <Route element={<MainLayout roles={userRole} />}>
+          <Route element={<ProtectedRoute roles={['admin']} />}>
+            <Route path="/admin" element={<Outlet />}>
+              <Route path="users" element={<UserManagement />} />
+              <Route path="courses" element={<CoursePageAdmin />} />
+            </Route>
           </Route>
-          <Route path="/courses" element={<AllCoursePage/>} />
-          <Route path="/my-courses" element={<CourseList />} />
-          <Route exact path="/my-courses" element={MyCourses} />
-          <Route exact path="/my-courses/:id" element={<CoursePage role={role} />} />
 
+          <Route path="/courses" element={<AllCoursePage />} />
 
+          <Route element={<ProtectedRoute roles={['admin', 'student','teacher']} />}>
+            <Route path="/my-courses" element={<CourseList />} />
+            <Route path="/my-courses/:id" element={<CoursePage roles={userRole} />} />
+            <Route path="/profile" element={<UserProfile user={user}/>} />
+          </Route>
         </Route>
       </Routes>
     </Router>

@@ -4,8 +4,7 @@ function createAuthRouter(authController) {
   const router = express.Router();
 
   router.post('/login', authController.loginUser);
-  router.post('/refresh-token', authController.refreshToken);
-
+  router.post('/register', authController.registerUser);
   return router;
 }
 

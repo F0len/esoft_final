@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
 
 class AuthService {
   constructor(userModel, secretKey) {
@@ -23,27 +24,26 @@ class AuthService {
     if (!isValidPassword) {
       throw new Error('Invalid password');
     }
+    
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
+    delete user.password;
     return { accessToken,refreshToken , user };
   }
 
-  //уже скорее всего не нужен
-  async refreshToken(refreshToken) {
-    if (!refreshToken) {
-      throw new Error('Access Denied. No refresh token provided.');
-    }
-
-    let user;
-    try {
-      user = jwt.verify(refreshToken,  this.secretKey);
-    } catch (err) {
-      throw new Error('Invalid refresh token');
-    }
-    const newAccessToken = this.generateAccessToken(user);
-    
-
-    return {newAccessToken, user };
+  async registerUser(user) {
+    const id = uuidv4();
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const newUser = {
+      id: id,
+      name: user.name,
+      login: user.login,
+      password: hashedPassword,
+      telegram: user.telegram,
+      roles: ["student"],
+    };
+    await this.userModel.createUser(newUser);
+    return newUser;
   }
 }
 

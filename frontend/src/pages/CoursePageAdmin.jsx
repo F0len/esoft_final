@@ -53,7 +53,7 @@ const CoursePageAdmin = () => {
       <Typography variant="h4" style={{ marginBottom: '20px' }}>Курсы</Typography>
       <Button variant="contained" style={{ backgroundColor: '#3f51b5', marginBottom: '20px' }} onClick={() => setOpenCourseForm(true)}>Создать курс</Button>
       {courses.map(course => (
-        <Accordion key={course.id}>
+        <Accordion key={course.id} style={{ backgroundColor: '#f5f5f5' }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography style={{ fontWeight: 'bold' }}>{course.name}</Typography>
           </AccordionSummary>

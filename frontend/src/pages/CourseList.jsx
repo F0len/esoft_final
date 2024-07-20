@@ -33,7 +33,7 @@ const CourseList = () => {
       <Grid container spacing={4} justifyContent="center">
         {courses.map((course) => (
           <Grid item xs={12} key={course.id} style={{ display: 'flex', justifyContent: 'center' }}>
-            <Card style={{ width: '100%', maxWidth: 800, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+            <Card style={{ width: '100%', maxWidth: 800, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' , backgroundColor: '#f5f5f5'  }}>
               <CardContent>
                 <Typography variant="h5" component="div">
                   {course.name}

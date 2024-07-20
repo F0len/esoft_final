@@ -1,11 +1,11 @@
 import React from 'react';
 import CourseDetail from '../components/CourseDetail';
 
-const CoursePage = ({ role }) => {
+const CoursePage = ({ roles }) => {
   return (
     <div>
 
-      <CourseDetail role={role} />
+      <CourseDetail roles={roles} />
     </div>
   );
 };

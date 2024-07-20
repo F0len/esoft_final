@@ -28,6 +28,7 @@ const CourseForm = ({ course, onSubmit }) => {
     <>
       <form onSubmit={handleSubmit}>
         <TextField
+        autoFocus
           label="Название курса"
           value={name}
           onChange={(e) => setName(e.target.value)}

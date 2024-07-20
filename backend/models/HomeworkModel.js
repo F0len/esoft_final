@@ -8,7 +8,7 @@ class HomeworkModel {
     }
   
     async getHomeworkById(id) {
-      return await this.knex('homework').where('Id', id).first();
+      return await this.knex('homework').where('id', id).first();
     }
   
     async createHomework(homework) {
@@ -16,11 +16,11 @@ class HomeworkModel {
     }
   
     async updateHomework(id, homework) {
-      return await this.knex('homework').where('Id', id).update(homework).returning('*');
+      return await this.knex('homework').where('id', id).update(homework).returning('*');
     }
   
     async deleteHomework(id) {
-      return await this.knex('homework').where('Id', id).del();
+      return await this.knex('homework').where('id', id).del();
     }
   }
   
